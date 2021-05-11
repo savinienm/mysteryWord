@@ -146,6 +146,9 @@
     <ClInclude Include="mixUpWord.h" />
     <ClInclude Include="mysteryWord.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="wordsList.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

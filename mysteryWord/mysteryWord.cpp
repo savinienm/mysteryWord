@@ -5,6 +5,8 @@
 #include <string>
 #include <ctime>
 #include <cstdlib>
+#include <fstream>
+#include <vector>
 #include "mixUpWord.h"
 using namespace std;
 
@@ -14,32 +16,61 @@ int main()
     srand(time(0));
 
     do {
-        // Première étape : saisie du mot par le joueur 1
+        // Première étape : on va chercher dans un fichier un mot au hasard
+
+        string const wordsList("C:/Users/user/source/repos/mysteryWord/mysteryWord/wordsList.txt");
+
+        ifstream wordsListFlow(wordsList.c_str());
 
         string mysteryWord, randomWord, guessWord;
 
-        cout << "Please, enter a word to start a game: ";
-        cin >> mysteryWord;
+        if (wordsListFlow) {
 
-        // Deuxième étape : mélange des lettres du mot
+            string line;
+            int lineCount(0);
+            vector<string> mysteryWordsList;
+            int mysteryPosition(0);
+
+            while (getline(wordsListFlow, line)){
+                lineCount++;
+                mysteryWordsList.push_back(line);
+            }
+                wordsListFlow.close();
+                mysteryPosition = rand() % mysteryWordsList.size();
+                mysteryWord = mysteryWordsList[mysteryPosition];
+        }
+        else {
+            cout << "ERROR: Impossible to open the file " << wordsList << "." << endl;
+        }
+
+
+        // Deuxième étape : mélange les lettres du mot
         do {
             randomWord = mixUpWord(mysteryWord);
         } while (randomWord == mysteryWord);
 
-        // Troisième étape : tentative de saisie du mot par le joueur 2
+        // Troisième étape : saisie d'un mot par l'opérateur
 
-        cout << "What is the mystery word " << randomWord << ": ";
+        cout << "What is the mystery word (be carefull, you only have 3 tries) " << randomWord << ": ";
         cin >> guessWord;
 
-        while (guessWord != mysteryWord) {
+        int attempt(3);
 
-            cout << "Oh no, it's not the right word, please try again " << randomWord << ": ";
+        while (guessWord != mysteryWord && attempt > 0) {
+
+            attempt--;
+            cout << "Oh no, it's not the right word, please try again (you still have " << attempt << " attempts) " << randomWord << ": ";
             cin >> guessWord;
 
         }
 
-        cout << "Welldone, you guess the mystery word " << mysteryWord << "! Do you want to play again? (yes/no) ";
-        cin >> reco;
+        if (guessWord == mysteryWord) {
+            cout << "Welldone, you guess the mystery word " << mysteryWord << "! Do you want to play again? (yes/no) ";
+            cin >> reco;
+        } else if (attempt == 0){
+            cout << "Oh no... You did not find the mystery word " << mysteryWord << "! Do you want to play again? (yes/no) ";
+            cin >> reco;
+        }
 
     while (reco != "no" && reco != "yes") {
         cout << "The question is simple: YES OR NO? (yes/no) ";
@@ -50,14 +81,3 @@ int main()
 
         return 0;
 }
-
-// Exécuter le programme : Ctrl+F5 ou menu Déboguer > Exécuter sans débogage
-// Déboguer le programme : F5 ou menu Déboguer > Démarrer le débogage
-
-// Astuces pour bien démarrer : 
-//   1. Utilisez la fenêtre Explorateur de solutions pour ajouter des fichiers et les gérer.
-//   2. Utilisez la fenêtre Team Explorer pour vous connecter au contrôle de code source.
-//   3. Utilisez la fenêtre Sortie pour voir la sortie de la génération et d'autres messages.
-//   4. Utilisez la fenêtre Liste d'erreurs pour voir les erreurs.
-//   5. Accédez à Projet > Ajouter un nouvel élément pour créer des fichiers de code, ou à Projet > Ajouter un élément existant pour ajouter des fichiers de code existants au projet.
-//   6. Pour rouvrir ce projet plus tard, accédez à Fichier > Ouvrir > Projet et sélectionnez le fichier .sln.
